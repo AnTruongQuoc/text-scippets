@@ -1,0 +1,53 @@
+Dear candidate,
+
+ 
+
+It's our pleasure to present you the below assessment.
+
+With this assessment we want to assess your knowledge with NodeJS, Typescript, ReactJS and overall self-reliance. We use this assessment for both really experienced as unexperienced developers. It's important for you to show us that you understand the core elements of Node and ReactJS, like correct use of patterns, generics, modules, components, directives and services. In addition, inheritance is an important factor as long as it is useful within the application. Needless to say, the SOLID principles and structure is an important factor.
+
+ 
+
+Lets get started:
+
+- Create a public accessible GIT repository
+
+- Do a clean install of NodeJs and ReactJS
+
+- Do clean in-between commits so we can see the different steps you took during development
+
+- Use NodeJS and Typescript
+
+- Use best practices
+
+- Comment the code to clarify certain choices. For this assessment there is no such thing as too many comments as long as it clarifies your choices.
+
+- It should be a Single Page Application
+
+- Keep an eye on scaling and performance
+
+ 
+
+The application you will be building is a library where you can store different text snippets. It should be possible to search through the selected text snippets for a specific string. If the string is found it will be highlighted.
+
+We expect the following:
+
+- Layout consists of the following three sections:
+
+                - Sidebar, where all the stored text snippets are shown by their title.
+
+                - Main section, here you show the actual text snippet
+
+                - Search area, where we can search through the selected text snippet
+
+- Set up a logical structure of the models
+
+- You should be able to add, update and delete text snippets
+
+- Be able to search for text snippets
+
+- Solid error handling
+
+- (EXTRA) Support pagination
+
+- (EXTRA) Add role based authentication
