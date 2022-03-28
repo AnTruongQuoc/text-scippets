@@ -1,11 +1,24 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
+
 import GoogleIcon from '@mui/icons-material/Google';
 import Validation from 'utils/validation';
 
-const mockEmail = ['truongquocan123@gmail.com']
+import { useAppDispatch, useAppSelector } from 'redux/hook';
+import { demoLogin } from 'redux/actions';
+import { selectUserIsLoggedIn } from 'redux/selectors';
+
+const mockEmail = ['truongquocan123@gmail.com', 'demo@yoo.com']
 
 const LoginPage: React.FC = () => {
+    
+    // Dispatch
+    const loginDispatch = useAppDispatch();
+    const isAuth = useAppSelector(selectUserIsLoggedIn);
 
+    // Navigate to another page (router)
+    const navigate = useNavigate();
+    
     // States
     const [btnContent, setBtnContent] = React.useState<string>('Continue with Email');
     const [isShowCodeInput, setIsShowCodeInput] = React.useState<boolean>(false);
@@ -15,6 +28,12 @@ const LoginPage: React.FC = () => {
     const [currEmail, setCurrEmail] = React.useState<string>('');
 
     const [notification, setNotification] = React.useState<string>('');
+
+    React.useEffect(() => {
+        if(isAuth) {
+            navigate('/dashboard');
+        }
+    }, [isAuth, navigate]);
 
     // Functions
     const handleLogin = (e: React.SyntheticEvent) => {
@@ -47,7 +66,9 @@ const LoginPage: React.FC = () => {
         if (email && password) {
             console.log('Login with password', email, password);
             // Call login API
-            setNotification('Login failed');
+            loginDispatch(demoLogin({email, password}));
+
+            //setNotification('Login failed');
         }
 
         if (email && code) {
@@ -64,12 +85,7 @@ const LoginPage: React.FC = () => {
         const email = e.target.value;
 
         if (email !== checkedEmail) {
-            setBtnContent('Continue with Email');
-            setIsCheckedEmail(false);
-            setIsShowPasswordInput(false);
-            setIsShowCodeInput(false);
-            setCheckedEmail('');
-            setNotification('');
+            setAllNeededStatedToDefault();
         }
 
         setCurrEmail(email);
@@ -77,9 +93,15 @@ const LoginPage: React.FC = () => {
 
     const handleClearCurrentEmail = (e: React.MouseEvent) => {
         e.preventDefault();
-        console.log(e)
+        
+        // Clear current email
         setCurrEmail('');
 
+        // Set all states to default
+        setAllNeededStatedToDefault();
+    }
+
+    const setAllNeededStatedToDefault = () => {
         setBtnContent('Continue with Email');
         setIsShowPasswordInput(false);
         setIsShowCodeInput(false);
