@@ -1,3 +1,3 @@
 // Export all needed actions here
 
-export {logout} from './slices/login/index';
+export {logout, demoLogin} from './slices/login/index';
