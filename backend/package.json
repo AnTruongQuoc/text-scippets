@@ -2,9 +2,11 @@
   "name": "text-snippets",
   "version": "1.0.0",
   "description": "project to improve skill ",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node dist/server.js",
+    "dev": "SET NODE_ENV=DEVELOPMENT & nodemon --exec ts-node server.ts",
+    "prod": "SET NODE_ENV=PRODUCTION & nodemon --exec ts-node server.ts"
   },
   "repository": {
     "type": "git",
@@ -25,7 +27,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.8",
     "nodemailer": "^6.7.3",
-    "typescript": "^4.6.3",
     "validator": "^13.7.0"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/nodemailer": "^6.4.4",
     "@types/validator": "^13.7.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "typescript": "^4.6.3"
   }
 }
