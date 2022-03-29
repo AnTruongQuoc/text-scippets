@@ -6,38 +6,40 @@ import 'styles/pages/dashboard.scss';
 // Components import
 import SideBar from 'components/sidebar/SideBar';
 import Tooltip from 'components/tooltip/Tooltip';
-import ContentBlock from 'components/dashboard/ContentBlock';
+import EditableContent from 'components/dashboard/EditableContent';
 
 type TextSnippet = {
     id: number;
     title: string;
-    blocks: Array<{ id: number, content: string }>;
+    content: string;
 }
 
 const mockData: Array<TextSnippet> = [
     {
         id: 1,
         title: 'Getting Started',
-        blocks: [
-            {
-                id: 0,
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-            }
-        ],
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+
     },
     {
         id: 2,
         title: 'An\'s Notes',
-        blocks: [
-            {
-                id: 0,
-                content: 'Helloooooooo'
-            },
-            {
-                id: 0,
-                content: 'Helloooooooo'
-            }
-        ],
+        content: 'Helloooooooo'
+    },
+    {
+        id: 3,
+        title: 'Demo Notes',
+        content: 'Helloooooooo'
+    },
+    {
+        id: 4,
+        title: 'CMCGlobal-DU11',
+        content: 'Helloooooooo'
+    },
+    {
+        id: 5,
+        title: 'Another NOTESSSSSSSSSSSSSS',
+        content: 'Helloooooooo'
     },
 ]
 
@@ -50,9 +52,30 @@ const Dashboard: React.FC = () => {
 
     const [currentTextSnippet, setCurrentTextSnippet] = React.useState<TextSnippet>({
         id: 0,
-        blocks: [],
-        title: '',
+        content: 'Loading...',
+        title: 'Loading...',
     });
+    
+    const [mockDataState, setMockDataState] = React.useState<Array<TextSnippet>>(null);
+
+    // Effects set mock data
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            setMockDataState(mockData);
+        }, 1000);
+
+        return () => {
+            // Cleanup
+            clearTimeout(timeout);
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if(mockDataState){
+            setCurrentTextSnippet(mockDataState[0]);
+        }
+
+    }, [mockDataState]);
 
     // Effects get header height
     React.useLayoutEffect(() => {
@@ -73,17 +96,23 @@ const Dashboard: React.FC = () => {
         setCurrentTextSnippet(mockData[index]);
     }
 
+    const getCurrentIndex = (current: TextSnippet) => {
+        return mockData.findIndex(item => item.id === current.id);
+    }
+
     return (
         <div className='w-screen h-screen flex flex-row overflow-hidden'>
             <SideBar
                 isCloseSideBar={isCloseSideBar}
                 handleCloseSideBar={handleCloseSideBar}
+                handleOpenSideBar={handleOpenSideBar}
                 textSnippetsData={mockData}
                 handleSelectTextSnippet={handleSelectTextSnippet}
+                selectedTextSnippetIndex={getCurrentIndex(currentTextSnippet)}
             />
 
             {/* Main Section */}
-            <div className='h-screen w-full max-h-screen'>
+            <div className={`h-screen w-full max-h-screen duration-500 ease-in-out ${!isCloseSideBar && 'ml-80'}`}>
                 <div
                     ref={titleHeaderRef}
                     className={`mainsection-header flex flex-row items-center pt-3 pb-3 pl-8 pr-4`}
@@ -110,8 +139,8 @@ const Dashboard: React.FC = () => {
                     <div className='w-1/2'>
                         <div className='text-4xl font-bold pt-10 pb-5'>{currentTextSnippet.title}</div>
                         <div className='w-full'>
-                            <ContentBlock
-                                blocks={currentTextSnippet.blocks}
+                            <EditableContent
+                                content={currentTextSnippet.content}
                             />
                         </div>
                     </div>
