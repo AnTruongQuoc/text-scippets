@@ -30,14 +30,14 @@ const EditableContent: React.FC<Props> = (props: Props) => {
     // }
 
     return (
-        <div>
-
+        <div className='w-full h-auto'>
             <div suppressContentEditableWarning={true} contentEditable={true} className='text-sm p-1 outline-none hover:bg-gray-100'
                 //onInput={(e) => handleContentBlockChange(e, index)}
                 //onBlur={(e) => handleContentBlockChange(e, index)}
                 onKeyUp={() => { }}
+                dangerouslySetInnerHTML={{ __html: editedBlock }}
             >
-                {editedBlock}
+                {/* {editedBlock} */}
             </div>
         </div>
     );
