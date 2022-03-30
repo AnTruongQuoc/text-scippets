@@ -7,6 +7,7 @@ import 'styles/pages/dashboard.scss';
 import SideBar from 'components/sidebar/SideBar';
 import Tooltip from 'components/tooltip/Tooltip';
 import EditableContent from 'components/dashboard/EditableContent';
+import SearchInTextSnippetModal from 'components/dashboard/SearchInTextSnippetModal';
 
 type TextSnippet = {
     id: number;
@@ -24,7 +25,7 @@ const mockData: Array<TextSnippet> = [
     {
         id: 2,
         title: 'An\'s Notes',
-        content: 'Helloooooooo'
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. \n Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
     },
     {
         id: 3,
@@ -55,9 +56,12 @@ const Dashboard: React.FC = () => {
         content: 'Loading...',
         title: 'Loading...',
     });
-    
     const [mockDataState, setMockDataState] = React.useState<Array<TextSnippet>>(null);
 
+    const [isOpenSearchModal, setIsOpenSearchModal] = React.useState<boolean>(false);
+    const [isOpenAddNewModal, setIsOpenAddNewModal] = React.useState<boolean>(false);
+
+    const [dragData, setDragData] = React.useState({clientX: 200, clientY: 200});
     // Effects set mock data
     React.useEffect(() => {
         const timeout = setTimeout(() => {
@@ -71,7 +75,7 @@ const Dashboard: React.FC = () => {
     }, []);
 
     React.useEffect(() => {
-        if(mockDataState){
+        if (mockDataState) {
             setCurrentTextSnippet(mockDataState[0]);
         }
 
@@ -100,22 +104,35 @@ const Dashboard: React.FC = () => {
         return mockData.findIndex(item => item.id === current.id);
     }
 
+    const handleOpenSearchModal = () => {
+        setIsOpenSearchModal(true);
+    }
+
+    const handleSearchInTextSnippet = (searchText: string) => {
+        const newText = currentTextSnippet.content.replaceAll(searchText, `<mark>${searchText}</mark>`);
+        setCurrentTextSnippet({
+            ...currentTextSnippet,
+            content: newText
+        });
+    }
+
     return (
-        <div className='w-screen h-screen flex flex-row overflow-hidden'>
+        <div className='w-screen h-screen max-h-screen flex flex-row overflow-hidden relative'>
             <SideBar
                 isCloseSideBar={isCloseSideBar}
+                textSnippetsData={mockData}
+                selectedTextSnippetIndex={getCurrentIndex(currentTextSnippet)}
                 handleCloseSideBar={handleCloseSideBar}
                 handleOpenSideBar={handleOpenSideBar}
-                textSnippetsData={mockData}
                 handleSelectTextSnippet={handleSelectTextSnippet}
-                selectedTextSnippetIndex={getCurrentIndex(currentTextSnippet)}
+                handleOpenSearchModal={handleOpenSearchModal}
             />
 
             {/* Main Section */}
-            <div className={`h-screen w-full max-h-screen duration-500 ease-in-out ${!isCloseSideBar && 'ml-80'}`}>
+            <div className={`h-screen w-full max-h-screen duration-500 ease-in-out ${!isCloseSideBar && 'ml-64'} relative`}>
                 <div
                     ref={titleHeaderRef}
-                    className={`mainsection-header flex flex-row items-center pt-3 pb-3 pl-8 pr-4`}
+                    className={`mainsection-header w-full flex flex-row items-center pt-3 pb-3 pl-8 pr-4 bg-white absolute`}
                 >
                     {
                         isCloseSideBar &&
@@ -135,8 +152,11 @@ const Dashboard: React.FC = () => {
                     </Tooltip>
                 </div>
 
-                <div className={`mainsection-content max-h-[calc(100vh_-_${headerHeight + 'px'})] pb-5 flex flex-col items-center justify-start  overflow-x-hidden overflow-y-auto dashboard-scrollbar`}>
-                    <div className='w-1/2'>
+                <div
+                    style={{ maxHeight: `calc(100vh - ${headerHeight}px)`, marginTop: headerHeight }}
+                    className={`mainsection-content pb-5 flex flex-col items-center justify-start overflow-x-hidden overflow-y-auto dashboard-scrollbar`}
+                >
+                    <div className='w-1/2 h-auto'>
                         <div className='text-4xl font-bold pt-10 pb-5'>{currentTextSnippet.title}</div>
                         <div className='w-full'>
                             <EditableContent
@@ -146,6 +166,17 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal */}
+
+            {
+                isOpenSearchModal &&
+                <SearchInTextSnippetModal 
+                    selectedTextSnippet={currentTextSnippet}
+                    onCloseModal={() => setIsOpenSearchModal(false)}
+                    handleSearchInTextSnippet={handleSearchInTextSnippet}
+                />
+            }
         </div>
     )
 }
