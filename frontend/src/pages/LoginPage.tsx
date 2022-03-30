@@ -5,8 +5,9 @@ import GoogleIcon from '@mui/icons-material/Google';
 import Validation from 'utils/validation';
 
 import { useAppDispatch, useAppSelector } from 'redux/hook';
-import { demoLogin } from 'redux/actions';
+import { demoLogin, userLoginThunkCreator } from 'redux/actions';
 import { selectUserIsLoggedIn } from 'redux/selectors';
+import { doLogin } from 'redux/slices/login/thunks/login-thunk';
 
 const mockEmail = ['truongquocan123@gmail.com', 'demo@yoo.com']
 
@@ -36,7 +37,7 @@ const LoginPage: React.FC = () => {
     }, [isAuth, navigate]);
 
     // Functions
-    const handleLogin = (e: React.SyntheticEvent) => {
+    const handleLogin = async(e: React.SyntheticEvent) => {
         e.preventDefault();
         const target = e.target as typeof e.target & {
             email: { value: string };
@@ -67,8 +68,16 @@ const LoginPage: React.FC = () => {
             console.log('Login with password', email, password);
             // Call login API
             loginDispatch(demoLogin({email, password}));
-
-            //setNotification('Login failed');
+            // loginDispatch(doLogin({email, password}))
+            //     .unwrap()
+            //     .then(
+            //         (value: any) => {
+            //             console.log(value)
+            //         },
+            //         (error: any) => {
+            //             setNotification('Login failed');
+            //         }
+            //     )
         }
 
         if (email && code) {
@@ -137,10 +146,11 @@ const LoginPage: React.FC = () => {
                                         type='email' id='email' name='email' placeholder='welcome@textsnippet.com' autoComplete='email'
                                         value={currEmail}
                                         onChange={handleChangeEmail}
+                                        autoFocus={true}
                                     />
                                     {
                                         currEmail &&
-                                        <button type="button" className='absolute right-2 top-1/4' onClick={handleClearCurrentEmail}>
+                                        <button type="button" className='absolute right-2 top-1/4' onClick={handleClearCurrentEmail} tabIndex={-1}>
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 decoration-gray-500" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                             </svg>
@@ -156,6 +166,7 @@ const LoginPage: React.FC = () => {
                                     <input
                                         className='w-full mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1'
                                         type='password' id='password' name='password' placeholder='Enter your password' autoComplete='current-password'
+                                        autoFocus={true}
                                     />
                                 </div>
                             }
