@@ -1,4 +1,3 @@
-import { Toolbar } from '@mui/material';
 import React from 'react';
 import 'styles/components/tooltip/tooltip.scss';
 
