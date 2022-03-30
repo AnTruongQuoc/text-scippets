@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+// Types
 import { UserLogin } from "../../types/LoginType";
+
+// Import Thunks
+import { doLogin } from "./thunks/login-thunk";
 
 const mockUser = [
     {
@@ -14,6 +19,7 @@ const mockUser = [
 
 const initialState: UserLogin = {
     email: "",
+    name: "",
     isLogin: false,
     isLoading: false,
     error: "",
@@ -38,7 +44,22 @@ const userLoginSlice = createSlice({
             })
         }
     },
-    extraReducers: {}
+    extraReducers: {
+        [doLogin.pending.toString()]: (state: UserLogin) => {
+            state.isLoading = true;
+        },
+        [doLogin.fulfilled.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
+            console.log(action.payload);
+            state.email = action.payload.email;
+            state.isLogin = true;
+            state.isLoading = false;
+        },
+        [doLogin.rejected.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
+            state.error = action.payload.error;
+            state.isLoading = false;
+        }
+
+    }
 });
 
 export const { logout, demoLogin } = userLoginSlice.actions;
