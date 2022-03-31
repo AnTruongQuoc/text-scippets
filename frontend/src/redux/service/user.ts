@@ -3,6 +3,7 @@ import { AxiosRequestConfig } from 'axios';
 
 class UserAuthAPI {
     readonly LOGIN_API = '/api/v1/auth/login';
+
     public static instance: UserAuthAPI;
 
     public login = (data: {email:string, password: string}): Promise<any> => {
@@ -10,6 +11,14 @@ class UserAuthAPI {
             method: 'POST',
             url: this.LOGIN_API,
             data: data
+        };
+        return axiosClient(config);
+    }
+
+    public checkMail = (email: string): Promise<any> => {
+        const config: AxiosRequestConfig = {
+            method: 'GET',
+            url: `/api/v1/auth/login?email=${email}`
         };
         return axiosClient(config);
     }
