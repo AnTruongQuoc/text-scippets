@@ -8,6 +8,7 @@ import SideBar from 'components/sidebar/SideBar';
 import Tooltip from 'components/tooltip/Tooltip';
 import EditableContent from 'components/dashboard/EditableContent';
 import SearchInTextSnippetModal from 'components/dashboard/SearchInTextSnippetModal';
+import CreateNewTextSnippetModal from 'components/dashboard/CreateNewTextSnippetModal';
 
 type TextSnippet = {
     id: number;
@@ -56,12 +57,18 @@ const Dashboard: React.FC = () => {
         content: 'Loading...',
         title: 'Loading...',
     });
-    const [mockDataState, setMockDataState] = React.useState<Array<TextSnippet>>(null);
+    const [mockDataState, setMockDataState] = React.useState<Array<TextSnippet>>([{
+        id: 0,
+        content: 'Loading...',
+        title: 'Loading...',
+    }]);
 
     const [isOpenSearchModal, setIsOpenSearchModal] = React.useState<boolean>(false);
     const [isOpenAddNewModal, setIsOpenAddNewModal] = React.useState<boolean>(false);
 
-    const [dragData, setDragData] = React.useState({clientX: 200, clientY: 200});
+    const [history, setHistory] = React.useState<TextSnippet>(null);
+    const [textSnippetUsedToSearch, setTextSnippetUsedToSearch] = React.useState<TextSnippet>(null);
+
     // Effects set mock data
     React.useEffect(() => {
         const timeout = setTimeout(() => {
@@ -97,39 +104,74 @@ const Dashboard: React.FC = () => {
     }
 
     const handleSelectTextSnippet = (index: number) => {
-        setCurrentTextSnippet(mockData[index]);
+        setCurrentTextSnippet(mockDataState[index]);
+        setTextSnippetUsedToSearch(mockDataState[index]);
     }
 
     const getCurrentIndex = (current: TextSnippet) => {
-        return mockData.findIndex(item => item.id === current.id);
+        return mockDataState.findIndex(item => item.id === current.id);
     }
 
     const handleOpenSearchModal = () => {
         setIsOpenSearchModal(true);
+        //setTextSnippetUsedToSearch(currentTextSnippet);
+    }
+
+    const handleCloseSearchModal = () => {
+        setIsOpenSearchModal(false);
+
+        if(history){
+            setCurrentTextSnippet(history);
+            setHistory(null);
+        }
     }
 
     const handleSearchInTextSnippet = (searchText: string) => {
-        const newText = currentTextSnippet.content.replaceAll(searchText, `<mark>${searchText}</mark>`);
+        if(!history || (history && history.id !== currentTextSnippet.id)){
+            setHistory(currentTextSnippet);
+        }
+
+        const newText = textSnippetUsedToSearch.content.replaceAll(searchText, `<mark>${searchText}</mark>`);
         setCurrentTextSnippet({
             ...currentTextSnippet,
             content: newText
         });
     }
 
+    const handleOpenCreateNewModal = () => {
+        setIsOpenAddNewModal(true);
+    }
+
+    const handleCloseCreateNewModal = () => {
+        setIsOpenAddNewModal(false);
+    }
+
+    const handleCreateNewTextSnippet = (title: string, content: string) => {
+        const newTextSnippet = {
+            id: mockDataState.length + 1,
+            title,
+            content
+        }
+        
+        setMockDataState([...mockDataState, newTextSnippet]);
+        setIsOpenAddNewModal(false);
+    }
+
     return (
         <div className='w-screen h-screen max-h-screen flex flex-row overflow-hidden relative'>
             <SideBar
                 isCloseSideBar={isCloseSideBar}
-                textSnippetsData={mockData}
+                textSnippetsData={mockDataState}
                 selectedTextSnippetIndex={getCurrentIndex(currentTextSnippet)}
                 handleCloseSideBar={handleCloseSideBar}
                 handleOpenSideBar={handleOpenSideBar}
                 handleSelectTextSnippet={handleSelectTextSnippet}
                 handleOpenSearchModal={handleOpenSearchModal}
+                handleOpenCreateNewModal={handleOpenCreateNewModal}
             />
 
             {/* Main Section */}
-            <div className={`h-screen w-full max-h-screen duration-500 ease-in-out ${!isCloseSideBar && 'ml-64'} relative`}>
+            <div className={`h-screen w-full max-h-screen duration-500 ease-in-out ${!isCloseSideBar && 'ml-64'} relative z-30`}>
                 <div
                     ref={titleHeaderRef}
                     className={`mainsection-header w-full flex flex-row items-center pt-3 pb-3 pl-8 pr-4 bg-white absolute`}
@@ -173,8 +215,16 @@ const Dashboard: React.FC = () => {
                 isOpenSearchModal &&
                 <SearchInTextSnippetModal 
                     selectedTextSnippet={currentTextSnippet}
-                    onCloseModal={() => setIsOpenSearchModal(false)}
+                    onCloseModal={handleCloseSearchModal}
                     handleSearchInTextSnippet={handleSearchInTextSnippet}
+                />
+            }
+
+            {
+                isOpenAddNewModal &&
+                <CreateNewTextSnippetModal 
+                    handleCloseModal={handleCloseCreateNewModal}
+                    handleCreateNewTextSnippet={handleCreateNewTextSnippet}
                 />
             }
         </div>
