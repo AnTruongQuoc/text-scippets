@@ -7,7 +7,7 @@ const RequireAuth: React.FC = () => {
 
     const isLogin = useAppSelector(selectUserIsLoggedIn);
 
-    if (!isLogin) {
+    if (isLogin) {
         return <Navigate to={'/login'} />;
     }
 
