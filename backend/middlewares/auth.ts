@@ -11,7 +11,7 @@ declare global{
     }
 }
 // Checks if user is authenticated or not
-export const isAuthenticatedUser = (req: Request, next: NextFunction) => {
+export const isAuthenticatedUser = () => (req: Request, next: NextFunction) => {
 
     const { token } = req.cookies;
     if (!token) {

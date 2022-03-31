@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import paginate from 'mongoose-paginate-v2';
 
 interface Iuser {
     name: string;
@@ -61,8 +59,6 @@ userSchema.methods.getLogincode = function () {
     this.loginCodeExpire = Date.now() + 30 * 60 * 1000;
     return this.loginCode;
 }
-
-userSchema.plugin(paginate);
 
 const User = mongoose.model<IUserDoccument>('User', userSchema);
 export default User;
