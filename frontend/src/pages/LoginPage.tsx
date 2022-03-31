@@ -51,6 +51,11 @@ const LoginPage: React.FC = () => {
 
         if (!Validation.isValidEmail(email)) return;
 
+        //doLoginFlowWithAPI(email, password, code);
+        doLoginFlowWithMockData(email, password, code);
+    }
+
+    const doLoginFlowWithAPI = (email: string, password?:string, code?: string) => {
         if (!isCheckedEmail) {
             // setIsCheckedEmail(true);
             // setBtnContent('Continue with password');
@@ -90,7 +95,7 @@ const LoginPage: React.FC = () => {
             console.log('Login with password', email, password);
             // Call login API
             //loginDispatch(demoLogin({ email, password }));
-            loginDispatch(doLogin({email, password}))
+            loginDispatch(doLogin({ email, password }))
                 .unwrap()
                 .then(
                     (value: any) => {
@@ -100,6 +105,33 @@ const LoginPage: React.FC = () => {
                         setNotification(error.response.data.errMessage);
                     }
                 )
+        }
+
+        if (email && code) {
+            console.log('Register with code', email, code);
+            //Call register API
+            setNotification('Register failed');
+        }
+    }
+
+    const doLoginFlowWithMockData = (email: string, password?:string, code?: string) => {
+        if (!isCheckedEmail && mockEmail.includes(email)) {
+            setIsCheckedEmail(true);
+            setBtnContent('Continue with password');
+            setIsShowPasswordInput(true);
+            setCheckedEmail(email);
+        }
+
+        if (!isCheckedEmail && !mockEmail.includes(email)) {
+            setIsCheckedEmail(true);
+            setBtnContent('Create new accounnt');
+            setIsShowCodeInput(true);
+        }
+
+        if (email && password) {
+            console.log('Login with password', email, password);
+            // Call login API
+            loginDispatch(demoLogin({ email, password }));
         }
 
         if (email && code) {
