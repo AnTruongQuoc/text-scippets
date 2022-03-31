@@ -1,6 +1,36 @@
 
 .homepage-glass-cover{
     filter: blur(30px);
+
+    .cover-gradient-1{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 24rem;
+        height: 24rem;
+        border-radius: 100%;
+        background-image: linear-gradient(to top, #fddb92 0%, #d1fdff 100%);
+    }
+
+    .cover-gradient-2{
+        position: absolute;
+        top: 15%;
+        left: 15%;
+        width: 40rem;
+        height: 40rem;
+        border-radius: 100%;
+        background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+    }
+
+    .cover-gradient-3{
+        position: absolute;
+        top: -10%;
+        left: 80%;
+        width: 30rem;
+        height: 30rem;
+        border-radius: 100%;
+        background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);    
+    }
 }
 
 .text-snippet{
@@ -12,6 +42,7 @@
 	    font-size: 140px;
     }
 }
+
 
 
 // Animations

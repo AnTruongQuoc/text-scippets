@@ -33,9 +33,11 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className='homepage-glass-cover h-screen w-screen absolute top-0 left-0'>
-                <div className='w-64 h-64 bg-blue-400 rounded-full absolute top-1/2 left-[55%]'></div>
-                <div className='w-72 h-72 bg-rose-300 rounded-full absolute top-1/3 left-1/3'></div>
-                <div className='w-80 h-80 bg-yellow-300 rounded-full absolute top-[10%] left-[15%]'></div>
+                <div className='relative h-screen w-screen overflow-hidden'>
+                <div className='cover-gradient-1'></div>
+                <div className='cover-gradient-2'></div>
+                <div className='cover-gradient-3'></div>
+                </div>
             </div>
         </div>
     );
