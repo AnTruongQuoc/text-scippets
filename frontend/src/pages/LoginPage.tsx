@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import GoogleIcon from '@mui/icons-material/Google';
 import Validation from 'utils/validation';
@@ -185,7 +185,7 @@ const LoginPage: React.FC = () => {
     return (
         <div className='login-page container mx-auto h-screen'>
             <div className='login-header p-3 fixed w-full'>
-                <h1 className='text-xl font-semibold'>TextSnippet</h1>
+                <Link to='/' className='text-xl font-semibold'>TextSnippet</Link>
             </div>
             <div className='login-body w-full h-full flex flex-row justify-center'>
                 <div className='w-80 flex flex-col items-center justify-center'>
