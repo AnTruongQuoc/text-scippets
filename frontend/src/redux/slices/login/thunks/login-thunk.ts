@@ -15,3 +15,16 @@ export const doLogin = createAsyncThunk(
     }
 );
 
+// Check mail
+export const doCheckMail = createAsyncThunk(
+    "userLogin/checkMail",
+    async (email: string, thunkAPI) => {
+        try{
+            const response = await userAuthAPI.checkMail(email);
+            return response;
+        } catch(err){
+            return thunkAPI.rejectWithValue(err);
+        }
+    }
+);
+
