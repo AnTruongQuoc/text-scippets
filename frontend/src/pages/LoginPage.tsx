@@ -130,14 +130,23 @@ const LoginPage: React.FC = () => {
 
         if (email && password) {
             console.log('Login with password', email, password);
+            if(password !== '123456') {
+                setNotification('Invalid email or password');
+                return
+            }
             // Call login API
             loginDispatch(demoLogin({ email, password }));
         }
 
         if (email && code) {
-            console.log('Register with code', email, code);
+            
+            if(code !== 'cmcglobal') {
+                setNotification('Register failed! Invalid code');
+                return
+            }
             //Call register API
-            setNotification('Register failed');
+            setNotification('Your code is correct');
+            
         }
     }
 
@@ -231,6 +240,7 @@ const LoginPage: React.FC = () => {
                                     <input
                                         className='w-full mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1'
                                         type='text' id='signup-code' name='code' placeholder='Enter your signup code' autoComplete='code'
+                                        autoFocus={true}
                                     />
                                 </div>
                             }
