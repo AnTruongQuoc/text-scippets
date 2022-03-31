@@ -1,5 +1,8 @@
+import UserDropDownMenu from 'components/dashboard/UserDropDownMenu';
 import Tooltip from 'components/tooltip/Tooltip';
 import React from 'react'
+import { logout } from 'redux/actions';
+import { useAppDispatch } from 'redux/hook';
 import 'styles/components/sidebar/sidebar.scss'
 
 type TextSnippet = {
@@ -15,16 +18,25 @@ type Props = {
     textSnippetsData: Array<TextSnippet>,
     handleSelectTextSnippet: (index: number) => void,
     handleOpenSearchModal: () => void,
+    handleOpenCreateNewModal: () => void,
     selectedTextSnippetIndex: number
 }
 
 const SideBar: React.FC<Props> = (props: Props) => {
-    const { 
+    const {
         isCloseSideBar, handleCloseSideBar,
-        handleOpenSideBar, handleSelectTextSnippet, handleOpenSearchModal
+        handleOpenSideBar, handleSelectTextSnippet, handleOpenSearchModal,
+        handleOpenCreateNewModal
     } = props;
-    const [isTrigger, setIsTrigger] = React.useState<boolean>(false);
 
+    // Dispatcher
+    const userDispatch = useAppDispatch();
+
+    // States
+    const [isTrigger, setIsTrigger] = React.useState<boolean>(false);
+    const [isOpenUserDropdownMenu, setIsOpenUserDropdownMenu] = React.useState<boolean>(false);
+
+    // Handlers
     React.useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
 
@@ -53,13 +65,34 @@ const SideBar: React.FC<Props> = (props: Props) => {
         }
     }, [isTrigger, isCloseSideBar, handleCloseSideBar, handleOpenSideBar]);
 
+    // Functions
+    const handleCloseUserDropdownMenu = () => {
+        setIsOpenUserDropdownMenu(false);
+    };
+
+    const handleOpenUserDropdownMenu = () => {
+        setIsOpenUserDropdownMenu(true);
+    };
+
+    const handleUserLogout = () => {
+        console.log('User logout');
+        userDispatch(logout());
+    }
+
     return (
         <div id='sideside' className={`sidebar ${isCloseSideBar ? 'fixed w-64 -left-80' : 'absolute left-0 w-64 max-w-64'}  top-0 h-screen bg-gray-100`}>
             <div className='flex flex-col h-full'>
                 <div className='sidebar-header pt-3 pb-3 pl-4 pr-4 flex flex-row justify-between items-center hover:bg-gray-200 h-fit w-full'>
-                    <div className=''>
-                        Username
+                    <div 
+                        onClick={handleOpenUserDropdownMenu}
+                        className='flex flex-row items-center cursor-pointer relative'
+                    >
+                        <span className='mr-2'>Username</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                        </svg>
                     </div>
+
                     <div className=''>
                         <Tooltip content='Close Sidebar Ctrl+\' direction='bottom'>
                             <button
@@ -84,7 +117,7 @@ const SideBar: React.FC<Props> = (props: Props) => {
                         <div className='text-xs text-gray-500 font-bold pb-3'>Features</div>
                         <div
                             onClick={handleOpenSearchModal}
-                            className='flex flex-row justify-start items-center hover:cursor-pointer hover:gb-gray-200'
+                            className='flex flex-row justify-start items-center hover:cursor-pointer hover:bg-gray-200 rounded p-2'
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -112,15 +145,26 @@ const SideBar: React.FC<Props> = (props: Props) => {
                 </div>
 
 
-                {/** Button add New Text Snippet and divider*/}
+                {/** Button - add New Text Snippet and divider*/}
                 <div className='border w-full h-px'></div>
-                <div className='bg-indigo-500 hover:bg-indigo-600 text-white rounded cursor-pointer flex flex-row items-center justify-center p-2 m-2 transition-all'>
+                <div
+                    onClick={handleOpenCreateNewModal}
+                    className='bg-indigo-500 hover:bg-indigo-600 text-white rounded cursor-pointer flex flex-row items-center justify-center p-2 m-2 transition-all'
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     <span className='pl-2 text-md'>New Text Snippet</span>
                 </div>
             </div>
+
+            {
+                isOpenUserDropdownMenu && 
+                <UserDropDownMenu 
+                    handleCloseUserDropdownMenu={handleCloseUserDropdownMenu}
+                    handleUserLogout={handleUserLogout}
+                />
+            }
         </div>
     )
 }
