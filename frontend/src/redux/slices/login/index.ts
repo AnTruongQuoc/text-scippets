@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserLogin } from "../../types/LoginType";
 
 // Import Thunks
-import { doLogin } from "./thunks/login-thunk";
+import { doCheckMail, doLogin } from "./thunks/login-thunk";
 
 const mockUser = [
     {
@@ -35,6 +35,7 @@ const userLoginSlice = createSlice({
             state.isLogin = false;
             state.isLoading = false;
             state.error = "";
+            localStorage.removeItem('token');
         },
         demoLogin: (state: UserLogin, action: PayloadAction<{email: string, password: string}>) => {
             mockUser.forEach(user => {
@@ -45,6 +46,7 @@ const userLoginSlice = createSlice({
         }
     },
     extraReducers: {
+        // Login
         [doLogin.pending.toString()]: (state: UserLogin) => {
             state.isLoading = true;
         },
@@ -53,8 +55,22 @@ const userLoginSlice = createSlice({
             state.email = action.payload.email;
             state.isLogin = true;
             state.isLoading = false;
+            localStorage.setItem('token', action.payload.token);
         },
         [doLogin.rejected.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
+            state.error = action.payload.error;
+            state.isLoading = false;
+        },
+
+        // Check mail
+        [doCheckMail.pending.toString()]: (state: UserLogin) => {
+            state.isLoading = true;
+        },
+        [doCheckMail.fulfilled.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
+            console.log(action.payload);
+            
+        },
+        [doCheckMail.rejected.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
             state.error = action.payload.error;
             state.isLoading = false;
         }
