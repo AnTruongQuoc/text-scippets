@@ -2,7 +2,7 @@ import http from 'http'
 import app from './app';
 import connectDatabase from './config/database';
 import dotenv from 'dotenv';
-const port = 3000;
+const port = Number(process.env.NODE_ENV) || 3000;
 //setting up config file
 dotenv.config({
     path: 'config/config.env'
