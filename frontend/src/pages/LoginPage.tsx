@@ -1,5 +1,5 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import GoogleIcon from '@mui/icons-material/Google';
 import Validation from 'utils/validation';
@@ -7,19 +7,19 @@ import Validation from 'utils/validation';
 import { useAppDispatch, useAppSelector } from 'redux/hook';
 import { demoLogin, userLoginThunkCreator } from 'redux/actions';
 import { selectUserIsLoggedIn } from 'redux/selectors';
-import { doLogin } from 'redux/slices/login/thunks/login-thunk';
+import { doCheckMail, doLogin } from 'redux/slices/login/thunks/login-thunk';
 
 const mockEmail = ['truongquocan123@gmail.com', 'demo@yoo.com']
 
 const LoginPage: React.FC = () => {
-    
+
     // Dispatch
     const loginDispatch = useAppDispatch();
     const isAuth = useAppSelector(selectUserIsLoggedIn);
 
     // Navigate to another page (router)
     const navigate = useNavigate();
-    
+
     // States
     const [btnContent, setBtnContent] = React.useState<string>('Continue with Email');
     const [isShowCodeInput, setIsShowCodeInput] = React.useState<boolean>(false);
@@ -31,13 +31,13 @@ const LoginPage: React.FC = () => {
     const [notification, setNotification] = React.useState<string>('');
 
     React.useEffect(() => {
-        if(isAuth) {
+        if (isAuth) {
             navigate('/dashboard');
         }
     }, [isAuth, navigate]);
 
     // Functions
-    const handleLogin = async(e: React.SyntheticEvent) => {
+    const handleLogin = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const target = e.target as typeof e.target & {
             email: { value: string };
@@ -51,33 +51,55 @@ const LoginPage: React.FC = () => {
 
         if (!Validation.isValidEmail(email)) return;
 
-        if (!isCheckedEmail && mockEmail.includes(email)) {
-            setIsCheckedEmail(true);
-            setBtnContent('Continue with password');
-            setIsShowPasswordInput(true);
-            setCheckedEmail(email);
+        if (!isCheckedEmail) {
+            // setIsCheckedEmail(true);
+            // setBtnContent('Continue with password');
+            // setIsShowPasswordInput(true);
+            // setCheckedEmail(email);
+            loginDispatch(doCheckMail(email))
+                .unwrap()
+                .then(
+                    (res: any) => {
+                        if (res.status === 200) {
+                            setIsCheckedEmail(true);
+                            setBtnContent('Continue with password');
+                            setIsShowPasswordInput(true);
+                            setCheckedEmail(email);
+                        }
+
+                        if (res.success) {
+                            setIsCheckedEmail(true);
+                            setBtnContent('Create new accounnt');
+                            setIsShowCodeInput(true);
+                        }
+                    },
+                    (err: any) => {
+                        console.log(err)
+                    }
+                );
+
         }
 
-        if (!isCheckedEmail && !mockEmail.includes(email)) {
-            setIsCheckedEmail(true);
-            setBtnContent('Create new accounnt');
-            setIsShowCodeInput(true);
-        }
+        // if (!isCheckedEmail && !mockEmail.includes(email)) {
+        //     setIsCheckedEmail(true);
+        //     setBtnContent('Create new accounnt');
+        //     setIsShowCodeInput(true);
+        // }
 
         if (email && password) {
             console.log('Login with password', email, password);
             // Call login API
-            loginDispatch(demoLogin({email, password}));
-            // loginDispatch(doLogin({email, password}))
-            //     .unwrap()
-            //     .then(
-            //         (value: any) => {
-            //             console.log(value)
-            //         },
-            //         (error: any) => {
-            //             setNotification('Login failed');
-            //         }
-            //     )
+            //loginDispatch(demoLogin({ email, password }));
+            loginDispatch(doLogin({email, password}))
+                .unwrap()
+                .then(
+                    (value: any) => {
+                        console.log(value)
+                    },
+                    (error: any) => {
+                        setNotification(error.response.data.errMessage);
+                    }
+                )
         }
 
         if (email && code) {
@@ -102,7 +124,7 @@ const LoginPage: React.FC = () => {
 
     const handleClearCurrentEmail = (e: React.MouseEvent) => {
         e.preventDefault();
-        
+
         // Clear current email
         setCurrEmail('');
 
