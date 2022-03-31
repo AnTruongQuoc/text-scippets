@@ -1,0 +1,29 @@
+
+.homepage-glass-cover{
+    filter: blur(30px);
+}
+
+.text-snippet{
+    text{
+        text-transform: uppercase;
+	    animation: stroke 5s infinite alternate;
+	    stroke-width: 2;
+	    stroke: #ff7b00;
+	    font-size: 140px;
+    }
+}
+
+
+// Animations
+@keyframes stroke {
+	0%   {
+		fill: rgba(72,138,20,0); stroke: rgba(189, 160, 0, 0.726);
+		stroke-dashoffset: 25%; stroke-dasharray: 0 50%; stroke-width: 2;
+	}
+	70%  {fill: rgba(72,138,20,0); stroke: rgb(219, 99, 0); }
+	80%  {fill: rgba(72,138,20,0); stroke: rgb(221, 107, 0); stroke-width: 3; }
+	100% {
+		fill: rgb(230, 84, 0); stroke: rgba(54,95,160,0); 
+		stroke-dashoffset: -25%; stroke-dasharray: 50% 0; stroke-width: 0;
+	}
+}
