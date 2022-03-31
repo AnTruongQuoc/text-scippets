@@ -1,12 +1,10 @@
-const ErrorHandler = require('../utils/errorHandler');
+import ErrorHandler from '../ultils/errorHandler';
+import { Request, Response, NextFunction } from 'express';
 
-module.exports = (err: any, req: any, res: any, next: any) => {
-    err.statusCode = err.statusCode || 500;
-
+const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+    err.status = err.status || 500;
     if (process.env.NODE_ENV === 'DEVELOPMENT') {
-        console.log(err);
-
-        res.status(err.statusCode).json({
+        res.status(err.status).json({
             success: false,
             error: err,
             errMessage: err.message,
@@ -26,16 +24,16 @@ module.exports = (err: any, req: any, res: any, next: any) => {
         }
 
         // Handling Mongoose Validation Error
-        if (err.name === 'ValidationError') {
-            const message = Object.values(err.errors).map((value: any) => value.message);
-            error = new ErrorHandler(message, 400)
-        }
+        // if (err.name === 'ValidationError') {
+        //     const message = Object.values(err.errors).map((value: any) => value.message);
+        //     error = new ErrorHandler(message, 400)
+        // }
 
-        // Handling Mongoose duplicate key errors
-        if (err.code === 11000) {
-            const message = `Duplicate ${Object.keys(err.keyValue)} entered`
-            error = new ErrorHandler(message, 400)
-        }
+        // // Handling Mongoose duplicate key errors
+        // if (err.code === 11000) {
+        //     const message = `Duplicate ${Object.keys(err.keyValue)} entered`
+        //     error = new ErrorHandler(message, 400)
+        // }
 
         // Handling wrong JWT error
         if (err.name === 'JsonWebTokenError') {
@@ -49,10 +47,11 @@ module.exports = (err: any, req: any, res: any, next: any) => {
             error = new ErrorHandler(message, 400)
         }
 
-        res.status(error.statusCode || 500).json({
+        res.status(error.status || 500).json({
             success: false,
             message: error.message || 'Internal Server Error'
         })
     }
-
+    next();
 }
+export default errorMiddleware
