@@ -1,5 +1,6 @@
-import { Response } from "express";
+import { CookieOptions, Response } from "express";
 import jwt from 'jsonwebtoken';
+
 
 // Create and send token and save in the cookie.
 const sendToken = (user: any , statusCode: number, res: Response) => {
@@ -11,11 +12,11 @@ const sendToken = (user: any , statusCode: number, res: Response) => {
     });
 
     // Options for cookie
-    const options = {
+    const options: CookieOptions = {
         expires: new Date(
             Date.now() + Number(process.env.COOKIE_EXPIRES_TIME) * 24 * 60 * 60 * 1000
         ),
-        httpOnly: true
+        httpOnly: true,
     }
 
 

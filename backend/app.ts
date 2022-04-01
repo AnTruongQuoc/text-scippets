@@ -2,20 +2,20 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import errorMiddleware from './middlewares/errors';
-import { isAuthenticatedUser } from './middlewares/auth';
+import isAuthenticatedUser from './middlewares/auth';
+import corsMiddleWare from './middlewares/errors'
 var cors = require('cors');
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser())
-app.use(cors())
-
+app.use(cors({ origin: true, credentials: true }));
 //import all router
 import auth from './routers/authRouter';
-import snipet from './routers/snipetRouter'
+import snipet from './routers/snipetRouter';
 app.use('/api/v1', auth)
-app.use('/api/v1', isAuthenticatedUser , snipet)
+app.use('/api/v1' ,isAuthenticatedUser, snipet)
 // Middleware to handle errors
 app.use(errorMiddleware);
 

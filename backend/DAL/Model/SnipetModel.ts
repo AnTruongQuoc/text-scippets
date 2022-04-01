@@ -23,5 +23,5 @@ const snipetSchema = new mongoose.Schema<Isnipet>({
 
 }, { timestamps: true })
 snipetSchema.plugin(mongoosePagination);
-const Snipet: Pagination<Isnipet> = mongoose.model<Isnipet, Pagination<Isnipet>>("User", snipetSchema);
+const Snipet: Pagination<Isnipet> = mongoose.model<Isnipet, Pagination<Isnipet>>("Snipet", snipetSchema);
 export default Snipet;
