@@ -1,10 +1,24 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import GoogleIcon from '@mui/icons-material/Google';
 import Validation from 'utils/validation';
 
-const mockEmail = ['truongquocan123@gmail.com']
+import { useAppDispatch, useAppSelector } from 'redux/hook';
+import { demoLogin, userLoginThunkCreator } from 'redux/actions';
+import { selectUserIsLoggedIn } from 'redux/selectors';
+import { doCheckCode, doCheckMail, doLogin } from 'redux/slices/login/thunks/login-thunk';
+
+const mockEmail = ['truongquocan123@gmail.com', 'demo@yoo.com']
 
 const LoginPage: React.FC = () => {
+
+    // Dispatch
+    const loginDispatch = useAppDispatch();
+    const isAuth = useAppSelector(selectUserIsLoggedIn);
+
+    // Navigate to another page (router)
+    const navigate = useNavigate();
 
     // States
     const [btnContent, setBtnContent] = React.useState<string>('Continue with Email');
@@ -16,8 +30,14 @@ const LoginPage: React.FC = () => {
 
     const [notification, setNotification] = React.useState<string>('');
 
+    React.useEffect(() => {
+        if (isAuth) {
+            navigate('/dashboard');
+        }
+    }, [isAuth, navigate]);
+
     // Functions
-    const handleLogin = (e: React.SyntheticEvent) => {
+    const handleLogin = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const target = e.target as typeof e.target & {
             email: { value: string };
@@ -31,6 +51,79 @@ const LoginPage: React.FC = () => {
 
         if (!Validation.isValidEmail(email)) return;
 
+        //doLoginFlowWithAPI(email, password, code);
+        doLoginFlowWithMockData(email, password, code);
+    }
+
+    const doLoginFlowWithAPI = (email: string, password?:string, code?: string) => {
+        if (!isCheckedEmail) {
+            // setIsCheckedEmail(true);
+            // setBtnContent('Continue with password');
+            // setIsShowPasswordInput(true);
+            // setCheckedEmail(email);
+            loginDispatch(doCheckMail(email))
+                .unwrap()
+                .then(
+                    (res: any) => {
+                        if (res.status === 200) {
+                            setIsCheckedEmail(true);
+                            setBtnContent('Continue with password');
+                            setIsShowPasswordInput(true);
+                            setCheckedEmail(email);
+                        }
+
+                        if (res.success) {
+                            setIsCheckedEmail(true);
+                            setBtnContent('Create new accounnt');
+                            setIsShowCodeInput(true);
+                        }
+                    },
+                    (err: any) => {
+                        console.log(err)
+                    }
+                );
+
+        }
+
+        // if (!isCheckedEmail && !mockEmail.includes(email)) {
+        //     setIsCheckedEmail(true);
+        //     setBtnContent('Create new accounnt');
+        //     setIsShowCodeInput(true);
+        // }
+
+        if (email && password) {
+            console.log('Login with password', email, password);
+            // Call login API
+            //loginDispatch(demoLogin({ email, password }));
+            loginDispatch(doLogin({ email, password }))
+                .unwrap()
+                .then(
+                    (value: any) => {
+                        console.log(value)
+                    },
+                    (error: any) => {
+                        setNotification(error.response.data.errMessage);
+                    }
+                )
+        }
+
+        if (email && code) {
+            console.log('Register with code', email, code);
+            //Call register API
+            loginDispatch(doCheckCode(code))
+                .unwrap()
+                .then(
+                    (res: any) => {
+                        
+                    },
+                    (err: any) => {
+                        setNotification('Register failed');
+                    }
+                )
+        }
+    }
+
+    const doLoginFlowWithMockData = (email: string, password?:string, code?: string) => {
         if (!isCheckedEmail && mockEmail.includes(email)) {
             setIsCheckedEmail(true);
             setBtnContent('Continue with password');
@@ -46,14 +139,23 @@ const LoginPage: React.FC = () => {
 
         if (email && password) {
             console.log('Login with password', email, password);
+            if(password !== '123456') {
+                setNotification('Wrong password');
+                return
+            }
             // Call login API
-            setNotification('Login failed');
+            loginDispatch(demoLogin({ email, password }));
         }
 
         if (email && code) {
-            console.log('Register with code', email, code);
+            
+            if(code !== 'cmcglobal') {
+                setNotification('Register failed! Invalid code');
+                return
+            }
             //Call register API
-            setNotification('Register failed');
+            setNotification('Your code is correct');
+            
         }
     }
 
@@ -64,12 +166,7 @@ const LoginPage: React.FC = () => {
         const email = e.target.value;
 
         if (email !== checkedEmail) {
-            setBtnContent('Continue with Email');
-            setIsCheckedEmail(false);
-            setIsShowPasswordInput(false);
-            setIsShowCodeInput(false);
-            setCheckedEmail('');
-            setNotification('');
+            setAllNeededStatedToDefault();
         }
 
         setCurrEmail(email);
@@ -77,9 +174,15 @@ const LoginPage: React.FC = () => {
 
     const handleClearCurrentEmail = (e: React.MouseEvent) => {
         e.preventDefault();
-        console.log(e)
+
+        // Clear current email
         setCurrEmail('');
 
+        // Set all states to default
+        setAllNeededStatedToDefault();
+    }
+
+    const setAllNeededStatedToDefault = () => {
         setBtnContent('Continue with Email');
         setIsShowPasswordInput(false);
         setIsShowCodeInput(false);
@@ -91,7 +194,7 @@ const LoginPage: React.FC = () => {
     return (
         <div className='login-page container mx-auto h-screen'>
             <div className='login-header p-3 fixed w-full'>
-                <h1 className='text-xl font-semibold'>TextSnippet</h1>
+                <Link to='/' className='text-xl font-semibold'>TextSnippet</Link>
             </div>
             <div className='login-body w-full h-full flex flex-row justify-center'>
                 <div className='w-80 flex flex-col items-center justify-center'>
@@ -115,10 +218,11 @@ const LoginPage: React.FC = () => {
                                         type='email' id='email' name='email' placeholder='welcome@textsnippet.com' autoComplete='email'
                                         value={currEmail}
                                         onChange={handleChangeEmail}
+                                        autoFocus={true}
                                     />
                                     {
                                         currEmail &&
-                                        <button type="button" className='absolute right-2 top-1/4' onClick={handleClearCurrentEmail}>
+                                        <button type="button" className='absolute right-2 top-1/4' onClick={handleClearCurrentEmail} tabIndex={-1}>
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 decoration-gray-500" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                             </svg>
@@ -134,6 +238,7 @@ const LoginPage: React.FC = () => {
                                     <input
                                         className='w-full mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1'
                                         type='password' id='password' name='password' placeholder='Enter your password' autoComplete='current-password'
+                                        autoFocus={true}
                                     />
                                 </div>
                             }
@@ -144,6 +249,7 @@ const LoginPage: React.FC = () => {
                                     <input
                                         className='w-full mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1'
                                         type='text' id='signup-code' name='code' placeholder='Enter your signup code' autoComplete='code'
+                                        autoFocus={true}
                                     />
                                 </div>
                             }

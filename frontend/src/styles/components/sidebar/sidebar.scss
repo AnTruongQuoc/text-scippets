@@ -1,0 +1,14 @@
+.sidebar{
+    transition: all 0.5s ease-in-out;
+    
+    .close-sidebar-btn{
+        opacity: 0;
+    }
+    &:hover{
+
+        .close-sidebar-btn{
+            opacity: 1;
+            transition: all 0.5s ease-in-out;
+        }
+    }
+}

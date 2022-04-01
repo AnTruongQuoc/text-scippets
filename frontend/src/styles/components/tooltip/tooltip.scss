@@ -1,0 +1,8 @@
+.tooltip-wrapper{
+    position: relative;
+    display: inline-block;
+
+    &:hover .tooltip-container{
+        display: block;
+    }
+}
