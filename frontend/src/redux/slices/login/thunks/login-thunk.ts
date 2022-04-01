@@ -28,3 +28,16 @@ export const doCheckMail = createAsyncThunk(
     }
 );
 
+// Check code
+export const doCheckCode = createAsyncThunk(
+    "userLogin/checkCode",
+    async (code: string, thunkAPI) => {
+        try{
+            const response = await userAuthAPI.checkCode(code);
+            return response;
+        } catch(err){
+            return thunkAPI.rejectWithValue(err);
+        }
+    }
+);
+
