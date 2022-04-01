@@ -7,7 +7,7 @@ import Validation from 'utils/validation';
 import { useAppDispatch, useAppSelector } from 'redux/hook';
 import { demoLogin, userLoginThunkCreator } from 'redux/actions';
 import { selectUserIsLoggedIn } from 'redux/selectors';
-import { doCheckMail, doLogin } from 'redux/slices/login/thunks/login-thunk';
+import { doCheckCode, doCheckMail, doLogin } from 'redux/slices/login/thunks/login-thunk';
 
 const mockEmail = ['truongquocan123@gmail.com', 'demo@yoo.com']
 
@@ -110,7 +110,16 @@ const LoginPage: React.FC = () => {
         if (email && code) {
             console.log('Register with code', email, code);
             //Call register API
-            setNotification('Register failed');
+            loginDispatch(doCheckCode(code))
+                .unwrap()
+                .then(
+                    (res: any) => {
+                        
+                    },
+                    (err: any) => {
+                        setNotification('Register failed');
+                    }
+                )
         }
     }
 
@@ -131,7 +140,7 @@ const LoginPage: React.FC = () => {
         if (email && password) {
             console.log('Login with password', email, password);
             if(password !== '123456') {
-                setNotification('Invalid email or password');
+                setNotification('Wrong password');
                 return
             }
             // Call login API
