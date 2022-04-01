@@ -11,6 +11,7 @@ const SERVER_URL = configEnv.SERVER_URL;
 const axiosClient = axios.create({
     baseURL: SERVER_URL,
     timeout: 8000,
+    withCredentials: true,
     //paramsSerializer: params => queryString.stringify(params),
 });
 

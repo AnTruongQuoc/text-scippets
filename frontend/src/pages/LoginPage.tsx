@@ -51,8 +51,8 @@ const LoginPage: React.FC = () => {
 
         if (!Validation.isValidEmail(email)) return;
 
-        //doLoginFlowWithAPI(email, password, code);
-        doLoginFlowWithMockData(email, password, code);
+        doLoginFlowWithAPI(email, password, code);
+        //doLoginFlowWithMockData(email, password, code);
     }
 
     const doLoginFlowWithAPI = (email: string, password?:string, code?: string) => {

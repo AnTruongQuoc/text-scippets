@@ -9,6 +9,8 @@ import Tooltip from 'components/tooltip/Tooltip';
 import EditableContent from 'components/dashboard/EditableContent';
 import SearchInTextSnippetModal from 'components/dashboard/SearchInTextSnippetModal';
 import CreateNewTextSnippetModal from 'components/dashboard/CreateNewTextSnippetModal';
+import { useAppDispatch } from 'redux/hook';
+import { doGetAllTextSnippet } from 'redux/slices/textSnippet/thunks/textsnippet-thunk';
 
 type TextSnippet = {
     id: number;
@@ -47,6 +49,9 @@ const mockData: Array<TextSnippet> = [
 
 const Dashboard: React.FC = () => {
 
+    // Disptach
+    const textSnippetDispatch = useAppDispatch();
+
     // States
     const titleHeaderRef = React.useRef<HTMLDivElement>(null);
     const [isCloseSideBar, setIsCloseSideBar] = React.useState<boolean>(false);
@@ -68,6 +73,10 @@ const Dashboard: React.FC = () => {
 
     const [history, setHistory] = React.useState<TextSnippet>(null);
     const [textSnippetUsedToSearch, setTextSnippetUsedToSearch] = React.useState<TextSnippet>(null);
+
+    React.useEffect(() => {
+        textSnippetDispatch(doGetAllTextSnippet("hello")).unwrap();
+    }, []);
 
     // Effects set mock data
     React.useEffect(() => {

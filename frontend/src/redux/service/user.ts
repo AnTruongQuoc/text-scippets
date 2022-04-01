@@ -10,7 +10,6 @@ class UserAuthAPI {
         const config: AxiosRequestConfig = {
             method: 'POST',
             url: this.LOGIN_API,
-            withCredentials: true,
             data: data
         };
         return axiosClient(config);
