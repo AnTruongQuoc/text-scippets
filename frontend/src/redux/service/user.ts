@@ -10,6 +10,7 @@ class UserAuthAPI {
         const config: AxiosRequestConfig = {
             method: 'POST',
             url: this.LOGIN_API,
+            withCredentials: true,
             data: data
         };
         return axiosClient(config);
@@ -19,6 +20,14 @@ class UserAuthAPI {
         const config: AxiosRequestConfig = {
             method: 'GET',
             url: `/api/v1/auth/login?email=${email}`
+        };
+        return axiosClient(config);
+    }
+
+    public checkCode = (code: string): Promise<any> => {
+        const config: AxiosRequestConfig = {
+            method: 'GET',
+            url: `/api/v1/auth/login/code/check?code=${code}`
         };
         return axiosClient(config);
     }
