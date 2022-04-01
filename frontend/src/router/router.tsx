@@ -6,6 +6,7 @@ import HomePage from 'pages/HomePage';
 import LoginPage from 'pages/LoginPage';
 import Dashboard from 'pages/Dashboard';
 import RequireAuth from './RequireAuth';
+import SetupAccount from 'pages/SetupAccount';
 
 /*
     react-router-dom v6
@@ -21,6 +22,7 @@ const MainRouter = () => {
             {/*Authenticated routes*/}
             <Route element={<RequireAuth />}> 
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/onboarding" element={<SetupAccount />} />
             </Route>
         </Routes>
     );
