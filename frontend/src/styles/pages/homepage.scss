@@ -1,0 +1,60 @@
+
+.homepage-glass-cover{
+    filter: blur(30px);
+
+    .cover-gradient-1{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 24rem;
+        height: 24rem;
+        border-radius: 100%;
+        background-image: linear-gradient(to top, #fddb92 0%, #d1fdff 100%);
+    }
+
+    .cover-gradient-2{
+        position: absolute;
+        top: 15%;
+        left: 15%;
+        width: 40rem;
+        height: 40rem;
+        border-radius: 100%;
+        background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+    }
+
+    .cover-gradient-3{
+        position: absolute;
+        top: -10%;
+        left: 80%;
+        width: 30rem;
+        height: 30rem;
+        border-radius: 100%;
+        background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);    
+    }
+}
+
+.text-snippet{
+    text{
+        text-transform: uppercase;
+	    animation: stroke 5s infinite alternate;
+	    stroke-width: 2;
+	    stroke: #ff7b00;
+	    font-size: 140px;
+    }
+}
+
+
+
+// Animations
+@keyframes stroke {
+	0%   {
+		fill: rgba(72,138,20,0); stroke: rgba(189, 160, 0, 0.726);
+		stroke-dashoffset: 25%; stroke-dasharray: 0 50%; stroke-width: 2;
+	}
+	70%  {fill: rgba(72,138,20,0); stroke: rgb(219, 99, 0); }
+	80%  {fill: rgba(72,138,20,0); stroke: rgb(221, 107, 0); stroke-width: 3; }
+	100% {
+		fill: rgb(230, 84, 0); stroke: rgba(54,95,160,0); 
+		stroke-dashoffset: -25%; stroke-dasharray: 50% 0; stroke-width: 0;
+	}
+}
