@@ -6,3 +6,4 @@ import { RootState } from 'redux/reducers'
  * @returns something that u want
  */
 
+export const selectUserIsLoggedIn = (rootState: RootState) => rootState.rootReducer.userLogin.isLogin;
