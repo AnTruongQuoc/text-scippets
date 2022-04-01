@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserLogin } from "../../types/LoginType";
 
 // Import Thunks
-import { doCheckMail, doLogin } from "./thunks/login-thunk";
+import { doCheckMail, doLogin, doCheckCode } from "./thunks/login-thunk";
 
 const mockUser = [
     {
@@ -21,6 +21,7 @@ const initialState: UserLogin = {
     email: "",
     name: "",
     isLogin: false,
+    isActive: false,
     isLoading: false,
     error: "",
 }
@@ -43,6 +44,12 @@ const userLoginSlice = createSlice({
                     state.isLogin = true;
                 }
             })
+        },
+        demoSignupWithCode: (state: UserLogin, action: PayloadAction<{code: string}>) => {
+            if(action.payload.code === 'cmcglobal'){
+                state.isLogin = true;
+                state.isActive = false;
+            }
         }
     },
     extraReducers: {
@@ -71,6 +78,22 @@ const userLoginSlice = createSlice({
             
         },
         [doCheckMail.rejected.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
+            state.error = action.payload.error;
+            state.isLoading = false;
+        },
+
+        // Check code
+        [doCheckCode.pending.toString()]: (state: UserLogin) => {
+            state.isLoading = true;
+        },
+        [doCheckCode.fulfilled.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
+            console.log(action.payload);
+            if(action.payload.status === 200){
+                state.isLogin = true;
+            }
+            
+        },
+        [doCheckCode.rejected.toString()]: (state: UserLogin, action: PayloadAction<any>) => {
             state.error = action.payload.error;
             state.isLoading = false;
         }
