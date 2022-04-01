@@ -1,3 +1,13 @@
 // Export all needed actions here
 
-export {logout} from './slices/login/index';
+/**
+ * Actions of user
+ */
+export {logout, demoLogin} from './slices/login/index';
+
+export const userLoginThunkCreator = (params: {email:string, password: string}) => {
+    return {
+        type: 'login',
+        payload: params
+    }
+}
