@@ -1,12 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import ErrorHandler from '../ultils/errorHandler';
+import { Request} from 'express';
 import * as snipet from '../DAL/snipetDAL';
-import userModel from '../models/userModel';
 
 export const getSnipets = async (req: Request) => {
-    const pageNumber = Number(req.query.pageNumer) || 1;
     const email = req.currentUser.email;
-    return await snipet.getAllSnipet(email, pageNumber)
+    const result = await snipet.getAllSnipet(email);
+    return {
+        "loadMore": result?.hasMore,
+        "listSnipet": result?.docs,
+    }
 }
 export const getSnipet = async (req: Request) => {
     const id = req.query.id as string;

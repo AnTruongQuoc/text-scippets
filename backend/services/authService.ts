@@ -69,14 +69,12 @@ export const checkLoginCode = async (code: string,next: NextFunction) => {
         next(new ErrorHandler('Please enter login code', 400))
     }
     const user = await auth.findUserByLoginCodeExpire(code);
-    console.log(user)
     if(!user) {
         next(new ErrorHandler('Login code invalid or has been expire', 400))
     }
     const _id = new ObjectId(user?._id).toString();
     const conditions = { _id };
     const options = {
-        isActive: 1,
         loginCode: null,
         loginCodeExpire: null
     }
@@ -89,6 +87,10 @@ export const completeRegister = async (email: string, password: string, name: st
     }
     password = await bcrypt.hash(password, 10);
     const conditions = { email };
-    const options = { password, name };
+    const options = { 
+        isActive: 1,
+        password, 
+        name 
+    };
     await auth.updateUser(conditions, options)
 }

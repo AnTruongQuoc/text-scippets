@@ -11,7 +11,7 @@ class Usermodel {
             email: this.email,
             name: this.name
         }
-      }
+    }
 }
 
 export default Usermodel;
